@@ -1,9 +1,11 @@
 import { action } from "@storybook/addon-actions";
+import { withKnobs, object } from '@storybook/addon-knobs';
 import Task from "./Task";
 export default {
   title: "Task",
   // Our exports that end in "Data" are not stories.
-  excludeStories: /.*Data$/
+  excludeStories: /.*Data$/,
+  decorators: [withKnobs],
 };
 export const actionsData = {
   onPinTask: action("onPinTask"),
@@ -18,6 +20,8 @@ export const taskData = {
 };
 
 const taskTemplate = `<task :task="task" @archiveTask="onArchiveTask" @pinTask="onPinTask"/>`;
+const longTitle = `This task's name is absurdly large. In fact, I think if I keep going I might end up with content overflow. What will happen? The star that represents a pinned task could have text overlapping. The text could cut-off abruptly when it reaches the star. I hope not! Or? nope nope nope nope nope`;
+
 
 // default task state
 export const Default = () => ({
@@ -25,7 +29,7 @@ export const Default = () => ({
   template: taskTemplate,
   props: {
     task: {
-      default: () => taskData
+      default: object('task', { ...taskData }),
     }
   },
   methods: actionsData
@@ -57,4 +61,18 @@ export const Archived = () => ({
     }
   },
   methods: actionsData
+});
+
+export const LongTitle = () => ({
+  components: { Task },
+  template: taskTemplate,
+  props: {
+    task: {
+      default: () => ({
+        ...taskData,
+        title: longTitle,
+      }),
+    },
+  },
+  methods: actionsData,
 });
